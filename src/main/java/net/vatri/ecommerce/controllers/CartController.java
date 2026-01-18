@@ -1,5 +1,7 @@
 package net.vatri.ecommerce.controllers;
-
+import javax.validation.valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import net.vatri.ecommerce.cart.CartItem;
 import net.vatri.ecommerce.cart.CartService;
 import net.vatri.ecommerce.hateoas.OrderResource;
@@ -36,12 +38,27 @@ public class CartController extends CoreController{
         return cartService.createNewCart();
     }
 
-    @PostMapping("/{id}")
-    public String addProduct(@PathVariable("id") String cartId, @RequestBody CartItem cartItem){
-        cartService.addProduct(cartId, cartItem);
-        return "OK";
+    // @PostMapping("/{id}")
+    // public String addProduct(@PathVariable("id") String cartId, @RequestBody CartItem cartItem){
+    //     cartService.addProduct(cartId, cartItem);
+    //     return "OK";
+    // }
+@PostMapping("/{id}")
+public ResponseEntity<?> addProduct(
+        @PathVariable("id") String cartId,
+        @Valid @RequestBody CartItem cartItem,
+        BindingResult bindingResult) {
+
+    if (bindingResult.hasErrors()) {
+        return ResponseEntity
+                .badRequest()
+                .body(bindingResult.getAllErrors());
     }
 
+    cartService.addProduct(cartId, cartItem);
+    return ResponseEntity.ok().build();
+}
+    
     @GetMapping("/{id}")
     public Set<CartItem> getCartItems(@PathVariable("id") String cartId){
         return cartService.getItems(cartId);

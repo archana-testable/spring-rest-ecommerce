@@ -12,3 +12,4 @@ public interface Cache {
     public Collection<Object> addItemToList(String key, Object item);
     public Collection<Object> removeItemFromList(String key, Object item);
 }
+  
